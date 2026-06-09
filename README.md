@@ -13,13 +13,13 @@ The repository is intended for workflows such as:
 
 ## Repository contents
 
-| File | Purpose |
-| --- | --- |
-| `counts_cli.py` | Assigns smFISH spot coordinates to nuclei in 2D or 3D and exports per-nucleus spot counts plus per-spot assignment results. |
-| `plot_upset_nonega.py` | Generates an UpSet plot and a co-expression pattern count table after excluding cells negative for all selected genes. |
-| `venn_upset.py` | Generates a Venn diagram for 2 or 3 sets, or attempts an UpSet-style plot when the number of columns exceeds the Venn threshold. |
-| `pca_umap_cli.py` | Runs PCA and UMAP on a per-nucleus spot-count table and saves a combined PCA/UMAP figure. |
-| `visualize_assignment_3d.py` | Opens a napari 3D viewer showing the nuclei mask, assigned spots, and optionally spot-to-centroid assignment vectors. |
+| File                         | Purpose                                                                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `counts_cli.py`              | Assigns smFISH spot coordinates to nuclei in 2D or 3D and exports per-nucleus spot counts plus per-spot assignment results.      |
+| `plot_upset_nonega.py`       | Generates an UpSet plot and a co-expression pattern count table after excluding cells negative for all selected genes.           |
+| `venn_upset.py`              | Generates a Venn diagram for 2 or 3 sets, or attempts an UpSet-style plot when the number of columns exceeds the Venn threshold. |
+| `pca_umap_cli.py`            | Runs PCA and UMAP on a per-nucleus spot-count table and saves a combined PCA/UMAP figure.                                        |
+| `visualize_assignment_3d.py` | Opens a napari 3D viewer showing the nuclei mask, assigned spots, and optionally spot-to-centroid assignment vectors.            |
 
 ## Installation
 
@@ -45,14 +45,14 @@ pip install "napari[all]"
 
 Required coordinate columns:
 
-- 2D data: `x`, `y`
-- 3D data: `x`, `y`, `z`
+* 2D data: `x`, `y`
+* 3D data: `x`, `y`, `z`
 
 The script also accepts RS-FISH-style column names and normalizes them automatically:
 
-- `x [px]` → `x`
-- `y [px]` → `y`
-- `z [px]` → `z`
+* `x [px]` → `x`
+* `y [px]` → `y`
+* `z [px]` → `z`
 
 ### Nucleus mask
 
@@ -60,8 +60,8 @@ The nucleus mask should be a labeled TIFF image, typically exported from Cellpos
 
 Expected dimensions:
 
-- 2D: `(Y, X)`
-- 3D: `(Z, Y, X)`
+* 2D: `(Y, X)`
+* 3D: `(Z, Y, X)`
 
 Background should be label `0`. Each nucleus should have a positive integer label.
 
@@ -103,9 +103,9 @@ Assignment rule:
 
 Outputs:
 
-| Output | Description |
-| --- | --- |
-| `<spot_csv_stem>_spots_per_nucleus.csv` | Per-nucleus spot count table. |
+| Output                                      | Description                                                    |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| `<spot_csv_stem>_spots_per_nucleus.csv`     | Per-nucleus spot count table.                                  |
 | `<spot_csv_stem>_spots_with_assignment.csv` | Original spot table plus `nucleus_label` and `status` columns. |
 
 Example output columns in `*_spots_with_assignment.csv`:
@@ -151,9 +151,9 @@ If `--genes` is omitted, numeric columns are auto-detected after excluding commo
 
 Outputs:
 
-| Output | Description |
-| --- | --- |
-| `*_upset.png` | UpSet plot. |
+| Output                 | Description                          |
+| ---------------------- | ------------------------------------ |
+| `*_upset.png`          | UpSet plot.                          |
 | `*_pattern_counts.csv` | Binary co-expression pattern counts. |
 
 The pattern bit order is written into the index name of the output CSV.
@@ -173,10 +173,10 @@ python venn_upset.py \
 
 Interpretation:
 
-- Columns other than `nucleus_label` are binarized.
-- Values `>= --bin_threshold` are treated as positive.
-- If the number of target columns is 2 or 3 and below `--venn_threshold`, a Venn diagram is generated.
-- For larger numbers of columns, use `plot_upset_nonega.py` as the more reliable UpSet workflow.
+* Columns other than `nucleus_label` are binarized.
+* Values `>= --bin_threshold` are treated as positive.
+* If the number of target columns is 2 or 3 and below `--venn_threshold`, a Venn diagram is generated.
+* For larger numbers of columns, use `plot_upset_nonega.py` as the more reliable UpSet workflow.
 
 ## PCA and UMAP
 
@@ -198,10 +198,11 @@ Processing steps:
 3. Standardize features with `StandardScaler`.
 4. Compute PCA and UMAP coordinates.
 5. Color points by one of the following, in priority order:
-   - a user-specified `--colour` column,
-   - a generated `pattern` column if `--threshold` is given,
-   - KMeans cluster ID if `--k` is given,
-   - a single default color if none of the above applies.
+
+   * a user-specified `--colour` column,
+   * a generated `pattern` column if `--threshold` is given,
+   * KMeans cluster ID if `--k` is given,
+   * a single default color if none of the above applies.
 
 ## 3D visualization in napari
 
@@ -217,10 +218,10 @@ python visualize_assignment_3d.py \
 
 The viewer displays:
 
-- raw smFISH image stack, if supplied,
-- labeled nuclei,
-- assigned and unassigned spots,
-- optional assignment vectors from each assigned spot to the centroid of the assigned nucleus.
+* raw smFISH image stack, if supplied,
+* labeled nuclei,
+* assigned and unassigned spots,
+* optional assignment vectors from each assigned spot to the centroid of the assigned nucleus.
 
 ## Suggested end-to-end example
 
@@ -245,9 +246,17 @@ python visualize_assignment_3d.py --mask nuclei_labels_3d.tif --spotscsv results
 
 ## Notes and current limitations
 
-- `counts_cli.py` currently contains placeholders for some 2D napari/overlay helper functions. The command-line assignment and CSV export are the primary supported functions.
-- `visualize_assignment_3d.py` assumes the spot assignment table contains `z`, `y`, `x`, `nucleus_label`, and `status` columns.
-- `plot_upset_nonega.py` excludes nuclei that are negative for all selected genes. This is useful when focusing on positive co-expression patterns but should be considered when calculating absolute frequencies across all segmented nuclei.
-- `pca_umap_cli.py` may try to install `umap-learn` automatically if it is missing. For reproducible environments, install all dependencies explicitly before running.
-- Coordinate convention differs between tools: spot tables use `x,y,z`, while napari/image stacks use `z,y,x`. The scripts convert these internally where needed.
+* `counts_cli.py` currently contains placeholders for some 2D napari/overlay helper functions. The command-line assignment and CSV export are the primary supported functions.
+* `visualize_assignment_3d.py` assumes the spot assignment table contains `z`, `y`, `x`, `nucleus_label`, and `status` columns.
+* `plot_upset_nonega.py` excludes nuclei that are negative for all selected genes. This is useful when focusing on positive co-expression patterns but should be considered when calculating absolute frequencies across all segmented nuclei.
+* `pca_umap_cli.py` may try to install `umap-learn` automatically if it is missing. For reproducible environments, install all dependencies explicitly before running.
+* Coordinate convention differs between tools: spot tables use `x,y,z`, while napari/image stacks use `z,y,x`. The scripts convert these internally where needed.
 
+## License
+
+This repository is distributed under the MIT License. Copyright (c) 2025 otasatiek.
+Under the MIT License, the software may be used, copied, modified, merged, published, distributed, sublicensed, and/or sold, provided that the copyright notice and permission notice are included in all copies or substantial portions of the software. The software is provided “as is,” without warranty of any kind.
+
+## README generation note
+
+This README file was generated by AI (ChatGPT) based on the repository contents available at the time of generation.
